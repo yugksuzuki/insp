@@ -1,0 +1,13 @@
+MONGO_URI=mongodb://localhost:27017/insmatch
+POSTIMAGE_API_KEY= chv_hbi9_5d838943c3c4f55fc9829c356d245d5d58c7f16c25ea6b13a45e0fdaf041ffde1b3c7644cf352f432bd7446309a3fe5795a00cfd7c9f1bc3235b14d1e349e3fb
+REPLICATE_API_TOKEN= r8_RopFZn3vgrRVUdakN3kEhXsXxbhye1e2Wg3wW
+REPLICATE_MODEL_VERSION= cf2e3b6eae889c5f3e7a2f27ac5b7b3d4f7a4a7f650a2fbcdb62e71dbb021b7c
+
+
+# Configurações do Pinecone
+PINECONE_API_KEY=pcsk_2rnH5M_6hYec4Du5X77mWkLxQ4up64F8xNVkpkrUvr6Y8eSCiaP47ym3Z7BuF1HEdABi5Y
+PINECONE_ENVIRONMENT=us-east1-gcp
+PINECONE_INDEX=inspmatch-index
+
+# Porta do servidor
+PORT=3001
