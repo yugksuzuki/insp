@@ -1,10 +1,9 @@
-
-import Replicate from "replicate";
+const Replicate = require("replicate");
 const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_TOKEN
+  auth: process.env.REPLICATE_API_TOKEN,
 });
 
-export async function getImageEmbedding(imageUrlOrBase64) {
+async function getImageEmbedding(imageUrlOrBase64) {
   const input = {
     image: imageUrlOrBase64
   };
@@ -27,9 +26,11 @@ export async function getImageEmbedding(imageUrlOrBase64) {
   }
 }
 
-export function cosineSimilarity(vecA, vecB) {
+function cosineSimilarity(vecA, vecB) {
   const dot = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
   const normA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
   const normB = Math.sqrt(vecB.reduce((sum, b) => sum + b * b, 0));
   return dot / (normA * normB);
 }
+
+module.exports = { getImageEmbedding, cosineSimilarity };
