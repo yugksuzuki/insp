@@ -1,38 +1,47 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import { Pinecone } from "@pinecone-database/pinecone";
-import Image from "../models/Image.js";
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const { Pinecone } = require("@pinecone-database/pinecone");
+const Image = require("../models/Image");
 
 dotenv.config();
-await mongoose.connect(process.env.MONGO_URI);
 
-// Inicialização correta do Pinecone com .init()
-const pinecone = new Pinecone();
-await pinecone.init({
-  apiKey: process.env.PINECONE_API_KEY,
-  environment: process.env.PINECONE_ENVIRONMENT
-});
+(async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
 
-const index = pinecone.Index(process.env.PINECONE_INDEX);
+    // Inicialização correta do Pinecone com .init()
+    const pinecone = new Pinecone();
+    await pinecone.init({
+      apiKey: process.env.PINECONE_API_KEY,
+      environment: process.env.PINECONE_ENVIRONMENT,
+    });
 
-const images = await Image.find();
+    const index = pinecone.Index(process.env.PINECONE_INDEX);
 
-if (!images.length) {
-  console.log("Nenhuma imagem encontrada no banco.");
-  process.exit();
-}
+    const images = await Image.find();
 
-const vectors = images.map((img) => ({
-  id: img._id.toString(),
-  values: img.embedding,
-  metadata: {
-    title: img.title || "Produto",
-    imageUrl: img.imageUrl,
-    idMongo: img._id
+    if (!images.length) {
+      console.log("Nenhuma imagem encontrada no banco.");
+      return;
+    }
+
+    const vectors = images.map((img) => ({
+      id: img._id.toString(),
+      values: img.embedding,
+      metadata: {
+        label: img.label || "Produto",
+        image_url: img.image_url,
+        idMongo: img._id,
+      },
+    }));
+
+    await index.upsert({ upsertRequest: { vectors } });
+
+    console.log("Pinecone index populated com", vectors.length, "vetores!");
+  } catch (err) {
+    console.error("Erro ao popular Pinecone:", err);
+  } finally {
+    process.exit();
   }
-}));
+})();
 
-await index.upsert({ upsertRequest: { vectors } });
-
-console.log("Pinecone index populated com", vectors.length, "vetores!");
-process.exit();
