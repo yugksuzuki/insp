@@ -65,7 +65,9 @@
     </button>
   </div>
 
-  <script>
+  <script type="module">
+    import { uploadImage } from "./scripts/upload.js";
+
     const dropZone = document.getElementById("dropZone");
     const fileInput = document.getElementById("fileInput");
     const previewContainer = document.getElementById("preview");
@@ -139,20 +141,8 @@
         console.log("Base64 inicia com:", base64Image?.substring(0, 30));
 
         try {
-          const res = await fetch("http://localhost:3001/api/images/upload", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              name,
-              image: base64Image
-            })
-          });
-
-          const data = await res.json();
-
-          if (res.ok && data.success) {
+          const data = await uploadImage(name, base64Image);
+          if (data.success) {
             console.log("Imagem salva com embedding:", name);
             successCount++;
           } else {
