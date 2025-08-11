@@ -6,6 +6,7 @@ const path = require("path"); // <-- IMPORTADO
 require("dotenv").config();
 
 const imageRoutes = require("./routes/imageRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 app.use(morgan("dev"));
@@ -31,6 +32,7 @@ mongoose
   .catch((err) => console.error("Erro ao conectar ao MongoDB:", err));
 
 app.use("/api/images", imageRoutes);
+app.use("/users", userRoutes);
 
 const compareRoutes = require("./routes/compareRoutes");
 app.use("/compare", compareRoutes);
