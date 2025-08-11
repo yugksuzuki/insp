@@ -12,13 +12,18 @@ export async function compareImage(base64Image, resultDiv) {
 
     const data = await response.json();
 
-    if (data.success) {
-      const match = data.match;
-      resultDiv.innerHTML = `
-        <p><strong>Imagem mais próxima:</strong> ${match.label}</p>
-        <img src="${match.image_url}" alt="Imagem mais parecida" style="max-width: 300px; border-radius: 12px;">
-        <p><strong>Similaridade:</strong> ${(match.similarity * 100).toFixed(2)}%</p>
-      `;
+    if (data.success && Array.isArray(data.matches)) {
+      const resultsHtml = data.matches
+        .map(
+          (match) => `
+        <div class="match">
+          <p><strong>Imagem:</strong> ${match.label}</p>
+          <img src="${match.image_url}" alt="${match.label}" style="max-width: 300px; border-radius: 12px;">
+          <p><strong>Similaridade:</strong> ${(match.similarity * 100).toFixed(2)}%</p>
+        </div>`
+        )
+        .join('');
+      resultDiv.innerHTML = resultsHtml;
     } else {
       resultDiv.innerHTML = `<p>❌ Erro: ${data.message}</p>`;
     }
